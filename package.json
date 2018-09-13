@@ -16,5 +16,11 @@
     "url": "https://github.com/mhanley00/liri-node-app/issues"
   },
   "homepage": "https://github.com/mhanley00/liri-node-app#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "moment": "^2.22.2",
+    "node-spotify-api": "^1.0.7",
+    "request": "^2.88.0"
+  }
 }
