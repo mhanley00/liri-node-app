@@ -33,21 +33,21 @@ function liriSearch() {
 
 function spotifyThis(){
 var song = process.argv[3];
-// var albumData = data.tracks.items;
 spotify.search({ type: 'track', query: song }, function(err, data) {
          if (err) {
           return console.log('Error occurred: ' + err);
         }
-       
-      console.log(data.tracks.items[0]); //tracks.items[0]
-      });}
-    
-//  albumData.forEach(function(album) {
-//        console.log(`Album name: ${album.album.name}`)
-//        album.artists.forEach(function(artist) {
-//            console.log(`Artist name: ${artist.name}`);
-//        })
-//  });
+      var albumData = data.tracks.items; //tracks.items[0]
+      console.log(albumData); 
+
+      albumData.forEach(function(album) {
+        console.log(`Album Name: ${album.album.name}`)
+        album.artists.forEach(function(artist) {
+        console.log(`Artist Name: ${artist.name}`);
+      }); //end of 2nd forEach
+    })
+});
+}
 
 
 function movieThis() {
