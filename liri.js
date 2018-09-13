@@ -1,14 +1,16 @@
 require("dotenv").config();
 var keys = require("./keys.js");
 var request = require("request");
+var moment = require('moment');
+moment().format();
 
 // var Spotify = require('node-spotify-api');
 
 // Set our port to 8080
 var PORT = 8080;
 // var spotify = new Spotify(keys.spotify);
-var omdb = (keys.OMDB);
-// var bit = (keys.BIT);
+var omdb = (keys.omdb.id);
+var bit = (keys.bit.id);
 // spotify.search({ type: 'track', 
 // query: 'All the Small Things' }, 
 // function(err, data) {
@@ -29,39 +31,62 @@ var omdb = (keys.OMDB);
 //${data.tracks.items[i]}
 
 
-var nodeArgs = process.argv;
-// Create an empty variable for holding the movie name
-var movieName = ""; //or make one for each term ie var song var band
-// Loop through all the words in the node argument
-// And do a little for-loop magic to handle the inclusion of "+"s
-for (var i = 2; i < nodeArgs.length; i++) {
+function liriSearch() {
+    var nodeArgs = process.argv[2];
+    switch (nodeArgs) {
+        case "movie-this":
+        movieThis();
+        break;
+        case "concert-this":
+        concertThis();
+        break;
+    }
+}
 
-    if (i > 2 && i < nodeArgs.length) {
-  
-      movieName = movieName + "+" + nodeArgs[i];
-  
-    }
-  
-    else {
-  
-      movieName += nodeArgs[i];
-  
-    }
-  }
-  
-  // Then run a request to the OMDB API with the movie specified
-  var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-  
-  // This line is just to help us debug against the actual URL.
-  console.log(queryUrl);
-  
-  request(queryUrl, function(error, res, body) {
-  
-    // If the request is successful
-    if (!error && res.statusCode === 200) {
-  
-      // Parse the body of the site and recover just the imdbRating
-      // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-      console.log("Release Year: " + JSON.parse(body).Year);
-    }
-  });
+
+function movieThis() {
+    var movie = process.argv[3];
+    // Then run a request to the OMDB API with the movie specified  
+    var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=" + omdb;
+    request(queryUrl, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            var jsonData = JSON.parse(body);
+
+            console.log("Title: " + jsonData.Title);
+            console.log("Year: " + jsonData.Year);
+            console.log("Rated: " + jsonData.Rated);
+            console.log("IMDB Rating: " + jsonData.imdbRating);
+            console.log("Country: " + jsonData.Country);
+            console.log("Language: " + jsonData.Language);
+            console.log("Plot: " + jsonData.Plot);
+            console.log("Actors: " + jsonData.Actors);
+            if (!jsonData.Ratings[1]) {} else {
+                console.log("Rotten Tomatoes Rating: " + jsonData.Ratings[1].Value)
+            };
+            console.log("------------------------------------------------------------------");
+        }
+    });
+}
+
+function concertThis() {
+    var band = process.argv[3];
+    var queryUrl = "https://rest.bandsintown.com/artists/" + band + "/events?app_id=" + bit;
+    request(queryUrl, function (error, response, body){
+        if (!error && response.statusCode === 200){
+            var jsonData = JSON.parse(body);
+            console.log("Venue: " + jsonData[0].venue.name);
+            console.log("Location: " + jsonData[0].venue.city);
+            console.log("Date: " + jsonData[0].datetime);
+            // * DATE OF EVENT (use moment to format this as "MM/DD/YYYY")
+
+
+            
+        }
+    })
+}
+liriSearch();
+
+
+
+
+// * Date of the Event (use moment to format this as "MM/DD/YYYY")
