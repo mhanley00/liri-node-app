@@ -42,8 +42,10 @@ function spotifyThis() {
         }
         var albumData = data.tracks.items; //tracks.items[0]
         //    console.log(albumData); 
+        albumData.forEach(function (album) {
+            console.log(`Song Name: ${album.name}`)
         albumData.forEach(function (external_urls) {
-            console.log(`PREVIEW: ${external_urls.preview_url}`)
+            console.log(`Song Preview: ${external_urls.preview_url}`)
             albumData.forEach(function (album) {
                 console.log(`Album Name: ${album.album.name}`)
                 album.artists.forEach(function (artist) {
@@ -51,6 +53,7 @@ function spotifyThis() {
                 }); //end offorEach
             })
         })
+    })
     });
 }
 
