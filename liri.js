@@ -2,53 +2,65 @@ require("dotenv").config();
 var keys = require("./keys.js");
 var request = require("request");
 var moment = require('moment');
+var Spotify = require('node-spotify-api');
+
 moment().format();
-
-// var Spotify = require('node-spotify-api');
-
-// Set our port to 8080
-var PORT = 8080;
-// var spotify = new Spotify(keys.spotify);
 var omdb = (keys.omdb.id);
 var bit = (keys.bit.id);
-// spotify.search({ type: 'track', 
-// query: 'All the Small Things' }, 
-// function(err, data) {
-//     if (err) {
-//       return console.log('Error occurred: ' + err);
-//     }
-   
-//   console.log(data.tracks.items[0]); //tracks.items[0]
-//   });
 
-//   2. `node liri.js spotify-this-song '<song name here>'`
-//   * This will show the following information about the song in your terminal/bash window
-//     * Artist(s)    
-//     * The song's name
-//     * A preview link of the song from Spotify
-//     * The album that the song is from
-//   * If no song is provided then your program will default to "The Sign" by Ace of Base.
-//${data.tracks.items[i]}
+var PORT = 8080;
+var spotify = new Spotify(keys.spotify);
 
 
 function liriSearch() {
     var nodeArgs = process.argv[2];
     switch (nodeArgs) {
+        case "spotify-this-song":
+        spotifyThis();
+        break;
         case "movie-this":
         movieThis();
         break;
         case "concert-this":
         concertThis();
         break;
+        // case "do-what-it-says":
+        // iWantItThatWay();
+        // break; //need spotify set up to do this
     }
 }
 
 
+function spotifyThis(){
+var song = process.argv[3];
+// var albumData = data.tracks.items;
+spotify.search({ type: 'track', query: song }, function(err, data) {
+         if (err) {
+          return console.log('Error occurred: ' + err);
+        }
+       
+      console.log(data.tracks.items[0]); //tracks.items[0]
+      });}
+    
+//  albumData.forEach(function(album) {
+//        console.log(`Album name: ${album.album.name}`)
+//        album.artists.forEach(function(artist) {
+//            console.log(`Artist name: ${artist.name}`);
+//        })
+//  });
+
+
 function movieThis() {
     var movie = process.argv[3];
+    // if (movie == ""){
+    //     movie = "Mr. Nobody";
+    //     console.log("the movie: "+ movie);
+
+    // }
     // Then run a request to the OMDB API with the movie specified  
     var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=" + omdb;
     request(queryUrl, function (error, response, body) {
+       
         if (!error && response.statusCode === 200) {
             var jsonData = JSON.parse(body);
 
@@ -65,6 +77,8 @@ function movieThis() {
             };
             console.log("------------------------------------------------------------------");
         }
+    
+        // If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
     });
 }
 
@@ -76,10 +90,7 @@ function concertThis() {
             var jsonData = JSON.parse(body);
             console.log("Venue: " + jsonData[0].venue.name);
             console.log("Location: " + jsonData[0].venue.city);
-            console.log("Date: " + jsonData[0].datetime);
-            // * DATE OF EVENT (use moment to format this as "MM/DD/YYYY")
-
-
+            console.log("Date: " + moment(jsonData[0].datetime).format('MM/DD/YYYY'));
             
         }
     })
