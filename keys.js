@@ -10,5 +10,5 @@ exports.omdb = {
 };
 
 exports.bit = {
-    id: BIT_ID
+    id: process.env.BIT_ID
 };
