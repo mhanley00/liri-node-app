@@ -31,22 +31,27 @@ function liriSearch() {
 }
 
 
-function spotifyThis(){
-var song = process.argv[3];
-spotify.search({ type: 'track', query: song }, function(err, data) {
-         if (err) {
-          return console.log('Error occurred: ' + err);
+function spotifyThis() {
+    var song = process.argv[3];
+    spotify.search({
+        type: 'track',
+        query: song
+    }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
         }
-      var albumData = data.tracks.items; //tracks.items[0]
-      console.log(albumData); 
-
-      albumData.forEach(function(album) {
-        console.log(`Album Name: ${album.album.name}`)
-        album.artists.forEach(function(artist) {
-        console.log(`Artist Name: ${artist.name}`);
-      }); //end of 2nd forEach
-    })
-});
+        var albumData = data.tracks.items; //tracks.items[0]
+        //    console.log(albumData); 
+        albumData.forEach(function (external_urls) {
+            console.log(`PREVIEW: ${external_urls.preview_url}`)
+            albumData.forEach(function (album) {
+                console.log(`Album Name: ${album.album.name}`)
+                album.artists.forEach(function (artist) {
+                    console.log(`Artist Name: ${artist.name}`);
+                }); //end offorEach
+            })
+        })
+    });
 }
 
 
@@ -57,7 +62,6 @@ function movieThis() {
     //     console.log("the movie: "+ movie);
 
     // }
-    // Then run a request to the OMDB API with the movie specified  
     var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=" + omdb;
     request(queryUrl, function (error, response, body) {
        
@@ -78,7 +82,6 @@ function movieThis() {
             console.log("------------------------------------------------------------------");
         }
     
-        // If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
     });
 }
 
@@ -96,8 +99,3 @@ function concertThis() {
     })
 }
 liriSearch();
-
-
-
-
-// * Date of the Event (use moment to format this as "MM/DD/YYYY")
